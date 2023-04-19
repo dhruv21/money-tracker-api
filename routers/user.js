@@ -49,6 +49,12 @@ const {
   updateTransaction
 } = require("../controllers/transactionController");
 
+const {
+  getSummaryByTransactionTag,
+  getSummaryByTransactionYear,
+  getSummaryByTransactionType
+} = require("../controllers/summaryController");
+
 const router = express.Router();
 
 router.route("/signin").post(userSignin);
@@ -91,5 +97,9 @@ router.route("/transactions/:id").get(protect, getTransaction).put(protect, upda
 
 router.route("/planned-transactions").post(protect, checkTransactionRequest);
 router.route("/planned-transactions/:id").get(protect, getPlannedTransaction);
+
+router.route("/summary-by-transaction-tag/:id/:year").get(protect, getSummaryByTransactionTag);
+router.route("/summary-by-transaction-year/:id/:year").get(protect, getSummaryByTransactionYear);
+router.route("/summary-by-transaction-type/:id/:type").get(protect, getSummaryByTransactionType);
 
 module.exports = router;

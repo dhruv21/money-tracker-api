@@ -40,6 +40,9 @@ const responseMessage = {
   getTransactionSuccess: "Transaction details found successfully.",
   getTransactionError: "Facing issue while finding transaction details.",
 
+  getSummarySuccess: "Summary details found successfully.",
+  getSummaryError: "Facing issue while finding summary details.",
+
   updateAccountSuccess: "Account details updated successfully.",
   updateAccountError: "Facing issue while updateding account details.",
 
