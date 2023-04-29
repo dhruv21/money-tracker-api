@@ -136,9 +136,9 @@ exports.getSummaryByTransactionTag = asyncHandler(async (req, res, next) => {
 
 exports.getSummaryByTransactionYear = asyncHandler(async (req, res, next) => {
     let summaryData = [];
-    let incomeSummary = { type: "income", actualAmount: 0, plannedAmount: 0, };
-    let expenceseSummary = { type: "expenses", actualAmount: 0, plannedAmount: 0, };
-    let investmentSummary = { type: "investment", actualAmount: 0, plannedAmount: 0, };
+    let incomeSummary = { type: "income", actual_amount: 0, planned_amount: 0, };
+    let expenceseSummary = { type: "expenses", actual_amount: 0, planned_amount: 0, };
+    let investmentSummary = { type: "investment", actual_amount: 0, planned_amount: 0, };
 
     let actualIncomeAmount = 0;
     let actualExpenceseAmount = 0;
@@ -175,9 +175,9 @@ exports.getSummaryByTransactionYear = asyncHandler(async (req, res, next) => {
     })
 
     summaryData.push(
-        { ...incomeSummary, actualAmount: actualIncomeAmount, plannedAmount: plannedIncomeAmount},
-        { ...expenceseSummary, actualAmount: actualIncomeAmount, plannedAmount: plannedExpenceseAmount },
-        { ...investmentSummary, actualAmount: actualIncomeAmount, plannedAmount: plannedInvestmentAmount });
+        { ...incomeSummary, actual_amount: actualIncomeAmount, planned_amount: plannedIncomeAmount},
+        { ...expenceseSummary, actual_amount: actualExpenceseAmount, planned_amount: plannedExpenceseAmount },
+        { ...investmentSummary, actual_amount: actualInvestmentAmount, planned_amount: plannedInvestmentAmount });
 
     res.status(200).json({
         data: summaryData,
@@ -190,15 +190,50 @@ exports.getSummaryByTransactionType = asyncHandler(async (req, res, next) => {
     let summaryData = [];
     let currentYear = moment().year();
 
-    for(let index = currentYear; index > (currentYear-5); index--){
+    for(let yearIndex = currentYear; yearIndex > (currentYear-5); yearIndex--){
         let actualAmount = 0;
         let plannedAmount = 0;
+        let months = [];
 
-        req.startDate = `01-01-${index}`;
-        req.endDate = `31-12-${index}`;
+        req.startDate = `01-01-${yearIndex}`;
+        req.endDate = `31-12-${yearIndex}`;
         
         let actualTransactionsByYear = await getActualTransactionByDate(req, res, next);
         let plannedTransactionsByYear = await getPlannedTransactionByDate(req, res, next);
+
+        for(let monthIndex = 1; monthIndex <= 12; monthIndex++){
+            let amountByMonth = 0.0;
+            req.startDate = moment(`01-${monthIndex}-${yearIndex}`, "DD-MM-YYYY")
+                .startOf("month")
+                .format("DD-MM-YYYY");
+            req.endDate = moment(`01-${monthIndex}-${yearIndex}`, "DD-MM-YYYY")
+                .endOf("month")
+                .format("DD-MM-YYYY");
+
+            let actualTransactionsByMonth = await getActualTransactionByDate(req, res, next);
+
+            if(req.params.type.toLowerCase() == 'income'){
+                actualTransactionsByMonth.forEach((transaction) => {
+                    if (transaction.income != null) {
+                        amountByMonth = amountByMonth + transaction.amount;
+                    } 
+                })
+            }else if(req.params.type.toLowerCase() == 'expenses'){
+                actualTransactionsByMonth.forEach((transaction) => {
+                    if (transaction.expences != null) {
+                        amountByMonth = amountByMonth + transaction.amount;
+                    } 
+                })
+            }else if(req.params.type.toLowerCase() == 'investment'){
+                actualTransactionsByMonth.forEach((transaction) => {
+                    if (transaction.investment != null) {
+                        amountByMonth = amountByMonth + transaction.amount;
+                    } 
+                })
+            }
+
+            months.push(amountByMonth);
+        }
 
         if(req.params.type.toLowerCase() == 'income'){
             actualTransactionsByYear.forEach((transaction) => {
@@ -238,7 +273,7 @@ exports.getSummaryByTransactionType = asyncHandler(async (req, res, next) => {
             })
         }
 
-        summaryData.push({year: index, actualAmount: actualAmount, plannedAmount: plannedAmount, });
+        summaryData.push({year: {year: yearIndex, actual_amount: actualAmount, planned_amount: plannedAmount, }, months: months});
     }
 
     res.status(200).json({
