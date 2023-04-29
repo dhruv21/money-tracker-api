@@ -46,7 +46,8 @@ const {
   addTransaction,
   getTransaction,
   removeTransaction,
-  updateTransaction
+  updateTransaction,
+  getTransactionSummaryByMonth,
 } = require("../controllers/transactionController");
 
 const {
@@ -97,6 +98,8 @@ router.route("/transactions/:id").get(protect, getTransaction).put(protect, upda
 
 router.route("/planned-transactions").post(protect, checkTransactionRequest);
 router.route("/planned-transactions/:id").get(protect, getPlannedTransaction);
+
+router.route("/transactions/summary/:id/:date").get(protect, getTransactionSummaryByMonth);
 
 router.route("/summary-by-transaction-tag/:id/:year").get(protect, getSummaryByTransactionTag);
 router.route("/summary-by-transaction-year/:id/:year").get(protect, getSummaryByTransactionYear);
