@@ -23,7 +23,7 @@ exports.addAccount = asyncHandler(async (req, res, next) => {
     req.body = {
       ...req.body,
       user_id: req.user.id,
-      name: `${req?.body?.owner_name}${req?.body?.bank}`,
+      name: `${req?.body?.owner_name}-${req?.body?.bank}`,
     };
     let account = await Account.create(req.body);
     account
@@ -65,7 +65,7 @@ exports.updateAccount = asyncHandler(async (req, res, next) => {
     let account = await Account.findByIdAndUpdate(
       req.params.id,
       {
-        name: `${req?.body?.owner_name}${req?.body?.bank}`,
+        name: `${req?.body?.owner_name}-${req?.body?.bank}`,
         owner_name: req?.body?.owner_name,
         bank: req?.body?.bank,
       },

@@ -11,24 +11,28 @@ exports.addExpenses = asyncHandler(async (req, res, next) => {
     user_id: req.user.id,
   });
 
-  if (expenses && !expenses.is_active) {
-    expenses = await Expenses.findByIdAndUpdate(
-      expenses.id,
-      {
-        is_active: true,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+  if (expenses) {
+    if(!expenses.is_active){
+      expenses = await Expenses.findByIdAndUpdate(
+        expenses.id,
+        {
+          is_active: true,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
-    expenses
-      ? res.status(201).json({
-          data: [expenses],
-          message: responseMessage.postExpensesSuccess,
-        })
-      : next(new ErrorResponse(responseMessage.postExpensesError, 400));
+      expenses
+        ? res.status(201).json({
+            data: [expenses],
+            message: responseMessage.postExpensesSuccess,
+          })
+        : next(new ErrorResponse(responseMessage.postExpensesError, 400));
+    }else{
+      next(new ErrorResponse(responseMessage.postExpenseDuplicateEnteryError, 400));
+    }
   } else {
     expenses = await Expenses.create(req.body);
     expenses

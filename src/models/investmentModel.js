@@ -4,7 +4,7 @@ const validationMessage = require("../utils/validationMessage");
 
 const { Schema } = mongoose;
 
-const expensesSchema = Schema(
+const investmentSchema = Schema(
   {
     user_id: {
       type: Schema.Types.ObjectId,
@@ -13,11 +13,10 @@ const expensesSchema = Schema(
     name: {
       type: String,
       trim: true,
-      unique: true,
       lowercase: true,
-      required: [true, validationMessage.expensesRequired],
-      maxlength: [50, validationMessage.expensesMaxLength],
-      minlength: [4, validationMessage.expensesMinLength],
+      required: [true, validationMessage.investmentRequired],
+      maxlength: [50, validationMessage.investmentMaxLength],
+      minlength: [4, validationMessage.investmentMinLength],
     },
     is_active: {
       type: Boolean,
@@ -27,7 +26,7 @@ const expensesSchema = Schema(
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
-expensesSchema.pre("save", function (next) {
+investmentSchema.pre("save", function (next) {
   let now = moment.utc(moment());
 
   this.updated_at = now;
@@ -36,6 +35,6 @@ expensesSchema.pre("save", function (next) {
   next();
 });
 
-expensesSchema.set("toJSON", { virtuals: true });
+investmentSchema.set("toJSON", { virtuals: true });
 
-module.exports = mongoose.model("expenses", expensesSchema);
+module.exports = mongoose.model("investment", investmentSchema);

@@ -11,24 +11,28 @@ exports.addIncome = asyncHandler(async (req, res, next) => {
     user_id: req.user.id,
   });
 
-  if (income && !income.is_active) {
-    income = await Income.findByIdAndUpdate(
-      income.id,
-      {
-        is_active: true,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+  if (income) {
+    if(!income.is_active){
+      income = await Income.findByIdAndUpdate(
+        income.id,
+        {
+          is_active: true,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
-    income
-      ? res.status(201).json({
-          data: [income],
-          message: responseMessage.postIncomeSuccess,
-        })
-      : next(new ErrorResponse(responseMessage.postIncomeError, 400));
+      income
+        ? res.status(201).json({
+            data: [income],
+            message: responseMessage.postIncomeSuccess,
+          })
+        : next(new ErrorResponse(responseMessage.postIncomeError, 400));
+    }else{
+      next(new ErrorResponse(responseMessage.postIncomeDuplicateEnteryError, 400));
+    }
   } else {
     income = await Income.create(req.body);
     income

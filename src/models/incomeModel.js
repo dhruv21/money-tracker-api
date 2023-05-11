@@ -14,7 +14,6 @@ const incomeSchema = Schema(
       type: String,
       trim: true,
       lowercase: true,
-      unique: true,
       required: [true, validationMessage.incomeRequired],
       maxlength: [50, validationMessage.incomeMaxLength],
       minlength: [4, validationMessage.incomeMinLength],

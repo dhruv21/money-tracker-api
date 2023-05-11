@@ -5,8 +5,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 var cors = require('cors');
 
-const userRouter = require("./routers/user");
-const errorHandler = require("./middleware/error");
+const userRouter = require("./src/routers/user");
+const errorHandler = require("./src/middleware/error");
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(cors());
 (async () => {
   try {
     await mongoose.connect(process.env.DB_URI);
-    let server = app.listen(3000);
+    app.listen(3000);
 
     app.use("/", userRouter);
     app.use((req, res) => {

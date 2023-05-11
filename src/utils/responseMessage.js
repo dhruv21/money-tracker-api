@@ -9,12 +9,15 @@ const responseMessage = {
 
   postExpensesSuccess: "Expenses details added successfully.",
   postExpensesError: "Facing issue while adding new expenses details.",
+  postExpenseDuplicateEnteryError: "Expense details alerady presenet in the system.",
 
   postIncomeSuccess: "Income details added successfully.",
   postIncomeError: "Facing issue while adding new income details.",
+  postIncomeDuplicateEnteryError: "Income details alerady presenet in the system.",
 
   postInvestmentSuccess: "Investment details added successfully.",
   postInvestmentError: "Facing issue while adding new investment details.",
+  postInvestmentDuplicateEnteryError: "Investment details alerady presenet in the system.",
 
   postPlannedTransactionSuccess: "Planned transaction details added successfully.",
   postPlannedTransactionError: "Facing issue while adding new planned transaction details.",

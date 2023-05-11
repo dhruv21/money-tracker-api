@@ -11,7 +11,7 @@ const userSchema = Schema(
     pan_number: {
       type: String,
       trim: true,
-      unique: true,
+      index: { unique: true, },
       required: [true, validationMessage.panNumberRequired],
       validate: {
         validator: function () {

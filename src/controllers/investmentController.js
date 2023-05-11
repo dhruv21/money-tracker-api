@@ -11,24 +11,28 @@ exports.addInvestment = asyncHandler(async (req, res, next) => {
     user_id: req.user.id,
   });
 
-  if (investment && !investment.is_active) {
-    investment = await Investment.findByIdAndUpdate(
-      investment.id,
-      {
-        is_active: true,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+  if (investment) {
+    if(!investment.is_active){
+      investment = await Investment.findByIdAndUpdate(
+        investment.id,
+        {
+          is_active: true,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
-    investment
-      ? res.status(201).json({
-          data: [investment],
-          message: responseMessage.postInvestmentSuccess,
-        })
-      : next(new ErrorResponse(responseMessage.postInvestmentError, 400));
+      investment
+        ? res.status(201).json({
+            data: [investment],
+            message: responseMessage.postInvestmentSuccess,
+          })
+        : next(new ErrorResponse(responseMessage.postInvestmentError, 400));
+      }else{
+        next(new ErrorResponse(responseMessage.postInvestmentDuplicateEnteryError, 400));
+      }
   } else {
     investment = await Investment.create(req.body);
 
